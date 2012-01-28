@@ -3,9 +3,11 @@ require 'chunky_png'
 require 'matrix'
 
 require 'image/filters'
+require 'image/histogram'
 
 class Image
   include Filters
+  include Histogram
 
   extend Forwardable
   delegate [:get_pixel, :set_pixel, :width, :height, :save] => :@png
@@ -20,5 +22,13 @@ class Image
 
   def dup
     Image.new(@png.dup)
+  end
+
+  def each_pixel
+    (0 ... @png.width).each do |x|
+      (0 ... @png.height).each do |y|
+        yield [x, y]
+      end
+    end
   end
 end
