@@ -16,7 +16,7 @@ class Image
       each_pixel do |x, y|
         intensity = grayscale_intensity(x, y)
         new_value = (((cumulative_distribution[intensity] - min_intensity) / pixel_count.to_f) * 255).round
-        output.set_pixel(x, y, ChunkyPNG::Color.grayscale(new_value))
+        output.set_pixel(x, y, Color.grayscale(new_value))
       end
 
       output
@@ -25,7 +25,7 @@ class Image
     private
 
     def grayscale_intensity(x, y)
-      ChunkyPNG::Color.to_grayscale_bytes(get_pixel(x, y)).first
+      Color.to_grayscale_bytes(get_pixel(x, y)).first
     end
 
     def calculate_histogram

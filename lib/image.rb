@@ -4,6 +4,7 @@ require 'matrix'
 
 require 'image/filters'
 require 'image/histogram'
+require 'color'
 
 class Image
   include Filters

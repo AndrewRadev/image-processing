@@ -18,13 +18,13 @@ class Image
 
         (0 .. 2).each do |x|
           (0 .. 2).each do |y|
-            pixel_x += sobel_x[x, y] * ChunkyPNG::Color.to_grayscale_bytes(block[x, y]).first
-            pixel_y += sobel_y[x, y] * ChunkyPNG::Color.to_grayscale_bytes(block[x, y]).first
+            pixel_x += sobel_x[x, y] * Color.to_grayscale_bytes(block[x, y]).first
+            pixel_y += sobel_y[x, y] * Color.to_grayscale_bytes(block[x, y]).first
           end
         end
 
         new_pixel = Math.sqrt(pixel_x * pixel_x + pixel_y * pixel_y).ceil
-        new_pixel = ChunkyPNG::Color.grayscale(new_pixel)
+        new_pixel = Color.grayscale(new_pixel)
 
         output.set_pixel(x, y, new_pixel)
       end
@@ -52,18 +52,18 @@ class Image
     end
 
     def convolve(matrix)
-      output = ChunkyPNG::Image.new(@png.width, @png.height)
+      output = dup
 
       each_block(matrix.row_size / 2) do |x, y, block|
         r, g, b = 0, 0, 0
 
         matrix.each_with_index do |value, row, col|
-          r += value * ChunkyPNG::Color.r(block[row, col])
-          g += value * ChunkyPNG::Color.g(block[row, col])
-          b += value * ChunkyPNG::Color.b(block[row, col])
+          r += value * Color.r(block[row, col])
+          g += value * Color.g(block[row, col])
+          b += value * Color.b(block[row, col])
         end
 
-        output.set_pixel(x, y, ChunkyPNG::Color.rgb(r.round, g.round, b.round))
+        output.set_pixel(x, y, Color.rgb(r.round, g.round, b.round))
       end
 
       output
