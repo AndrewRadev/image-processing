@@ -4,11 +4,13 @@ require 'matrix'
 
 require 'image/filters'
 require 'image/histogram'
+require 'image/threshold'
 require 'color'
 
 class Image
   include Filters
   include Histogram
+  include Threshold
 
   extend Forwardable
   delegate [:get_pixel, :set_pixel, :width, :height, :save] => :@png
@@ -31,5 +33,9 @@ class Image
         yield [x, y]
       end
     end
+  end
+
+  def grayscale_intensity(x, y)
+    Color.to_grayscale_bytes(get_pixel(x, y)).first
   end
 end

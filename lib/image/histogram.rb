@@ -24,10 +24,6 @@ class Image
 
     private
 
-    def grayscale_intensity(x, y)
-      Color.to_grayscale_bytes(get_pixel(x, y)).first
-    end
-
     def calculate_histogram
       data = {}
       data.default = 0
