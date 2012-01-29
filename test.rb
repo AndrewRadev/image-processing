@@ -4,10 +4,10 @@ require 'pp'
 require 'image'
 
 puts '>> Opening image...'
-input = Image.from_file('image.png')
+input = Image.from_file('image_normalized.png')
 
 puts '>> Processing...'
-output = input.normalize_histogram.iterative_threshold
+output = input.adaptive_threshold(10, 5)
 
 puts '>> Saving...'
 output.save('image_processed.png', :fast_rgba)

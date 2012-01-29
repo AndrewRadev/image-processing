@@ -3,8 +3,8 @@ require 'chunky_png'
 
 class Image
   module Filters
-    def blur
-      convolve(mean_filter(3))
+    def blur(size)
+      convolve(mean_filter(size))
     end
 
     def sobel
