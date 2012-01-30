@@ -5,7 +5,7 @@ class Image
   module Threshold
     def threshold(value)
       output = dup
-      each_pixel { |x, y| output.threshold_pixel(x, y, value) }
+      each_pixel { |x, y, pixel| output.threshold_pixel(x, y, value) }
       output
     end
 
@@ -16,8 +16,8 @@ class Image
         background = []
         foreground = []
 
-        each_pixel do |x, y|
-          value = grayscale_intensity(x, y)
+        each_pixel do |x, y, pixel|
+          value = Color.grayscale_intensity(pixel)
 
           if value > current_threshold_value
             foreground << value
@@ -44,7 +44,7 @@ class Image
     protected
 
     def threshold_pixel(x, y, value)
-      if grayscale_intensity(x, y) > value
+      if Color.grayscale_intensity(get_pixel(x, y)) > value
         set_pixel(x, y, Color.grayscale(255))
       else
         set_pixel(x, y, Color.grayscale(0))

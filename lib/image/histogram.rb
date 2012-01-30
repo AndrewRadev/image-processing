@@ -13,8 +13,8 @@ class Image
       min_intensity = cumulative_distribution.to_a.min[1]
       output        = dup
 
-      each_pixel do |x, y|
-        intensity = grayscale_intensity(x, y)
+      each_pixel do |x, y, pixel|
+        intensity = Color.grayscale_intensity(pixel)
         new_value = (((cumulative_distribution[intensity] - min_intensity) / pixel_count.to_f) * 255).round
         output.set_pixel(x, y, Color.grayscale(new_value))
       end
@@ -28,8 +28,8 @@ class Image
       data = {}
       data.default = 0
 
-      each_pixel do |x, y|
-        data[grayscale_intensity(x, y)] += 1
+      each_pixel do |x, y, pixel|
+        data[Color.grayscale_intensity(pixel)] += 1
       end
 
       data

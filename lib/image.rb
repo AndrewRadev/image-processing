@@ -30,12 +30,8 @@ class Image
   def each_pixel
     (0 ... @png.width).each do |x|
       (0 ... @png.height).each do |y|
-        yield [x, y]
+        yield [x, y, get_pixel(x, y)]
       end
     end
-  end
-
-  def grayscale_intensity(x, y)
-    Color.to_grayscale_bytes(get_pixel(x, y)).first
   end
 end
