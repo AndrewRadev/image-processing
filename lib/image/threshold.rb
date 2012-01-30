@@ -33,13 +33,12 @@ class Image
       threshold(current_threshold_value)
     end
 
-    def adaptive_threshold(radius = 5, adjustment = 0)
-      output = dup
-      each_block(radius) do |x, y, block|
-        block = block.map { |pixel| Color.to_grayscale_bytes(pixel).first }
-        output.threshold_pixel(x, y, block.average - adjustment)
-      end
-      output
+    def mean_adaptive_threshold(radius, adjustment)
+      adaptive_threshold(radius) { |block| block.mean - adjustment }
+    end
+
+    def median_adaptive_threshold(radius, adjustment)
+      adaptive_threshold(radius) { |block| block.median - adjustment }
     end
 
     protected
@@ -50,6 +49,21 @@ class Image
       else
         set_pixel(x, y, Color.grayscale(0))
       end
+    end
+
+    private
+
+    def adaptive_threshold(radius)
+      output = dup
+
+      each_block(radius) do |x, y, block|
+        block = block.map { |pixel| Color.to_grayscale_bytes(pixel).first }
+        value = yield block
+
+        output.threshold_pixel(x, y, value)
+      end
+
+      output
     end
   end
 end
