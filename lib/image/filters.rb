@@ -3,8 +3,16 @@ require 'chunky_png'
 
 class Image
   module Filters
-    def blur(size)
+    def mean_blur(size)
       convolve(mean_filter(size))
+    end
+
+    def gaussian_blur
+      convolve(gaussian_filter)
+    end
+
+    def laplacian
+      convolve(laplacian_filter)
     end
 
     def sobel
@@ -72,6 +80,24 @@ class Image
     def mean_filter(n)
       value = 1.0 / (n ** 2)
       Matrix.build(n) { value }
+    end
+
+    def gaussian_filter
+      1/273.0 * Matrix[
+        [1, 4, 7, 4, 1],
+        [4, 16, 26, 16, 4],
+        [7, 26, 41, 26, 7],
+        [4, 16, 26, 16, 4],
+        [1, 4, 7, 4, 1]
+      ]
+    end
+
+    def laplacian_filter
+      Matrix[
+        [-1, -1, -1],
+        [-1, 8, -1],
+        [-1, -1, -1]
+      ]
     end
   end
 end

@@ -34,4 +34,15 @@ class Image
       end
     end
   end
+
+  def map
+    output = dup
+
+    each_pixel do |x, y, pixel|
+      new_pixel = yield [x, y, pixel]
+      output.set_pixel(x, y, new_pixel)
+    end
+
+    output
+  end
 end

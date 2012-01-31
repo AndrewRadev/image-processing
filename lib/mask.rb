@@ -14,12 +14,12 @@ class Mask
     end
   end
 
-  def apply(image)
+  def apply(image, color = Color.rgb(0, 0, 0))
     result = image.dup
 
     each_pixel do |x, y, keep|
       if not keep
-        result.set_pixel(x, y, Color.rgb(0, 0, 0))
+        result.set_pixel(x, y, color)
       end
     end
 
