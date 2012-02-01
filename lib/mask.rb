@@ -1,11 +1,27 @@
-require 'forwardable'
-require 'image'
-
 class Mask
-  extend Forwardable
-
   def initialize(image, &block)
+    block ||= proc { false }
     @mask = Matrix.build(image.width, image.height, &block)
+  end
+
+  def [](x, y)
+    @mask[x, y]
+  end
+
+  def add(x, y)
+    @mask.send(:[]=, x, y, true)
+  end
+
+  def remove(x, y)
+    @mask.send(:[]=, x, y, false)
+  end
+
+  def width
+    @mask.row_size
+  end
+
+  def height
+    @mask.column_size
   end
 
   def each_pixel
@@ -24,5 +40,17 @@ class Mask
     end
 
     result
+  end
+
+  def &(other)
+    Mask.new(other) do |x, y|
+      self[x, y] || other[x, y]
+    end
+  end
+
+  def ~@
+    Mask.new(self) do |x, y|
+      not self[x, y]
+    end
   end
 end
