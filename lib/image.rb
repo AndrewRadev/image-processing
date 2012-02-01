@@ -27,6 +27,10 @@ class Image
     Image.new(@png.dup)
   end
 
+  def blank_copy
+    Image.new(ChunkyPNG::Image.new(width, height, ChunkyPNG::Color::WHITE))
+  end
+
   def each_pixel
     (0 ... @png.width).each do |x|
       (0 ... @png.height).each do |y|
@@ -35,8 +39,8 @@ class Image
     end
   end
 
-  def map
-    output = dup
+  def map_pixels
+    output = blank_copy
 
     each_pixel do |x, y, pixel|
       new_pixel = yield [x, y, pixel]
@@ -44,5 +48,25 @@ class Image
     end
 
     output
+  end
+
+  def each_block(radius)
+    block_size = radius * 2 + 1
+
+    (radius .. (width - radius) - 1).each do |x|
+      (radius .. (height - radius) - 1).each do |y|
+        left = x - radius
+        top  = y - radius
+
+        block = Matrix.build(block_size) do |dx, dy|
+          get_pixel(left + dx, top + dy)
+        end
+
+        yield [x, y, block]
+      end
+    end
+  end
+
+  def -(other)
   end
 end

@@ -16,15 +16,8 @@ def time(text)
   result
 end
 
-input = Image.from_file('image_blurred.png')
-
-output = time 'Applying laplacian operator' do
-  input.laplacian
-end
-
-# output = time 'Blur' do
-#   input.gaussian_blur
-# end
+input = Image.from_file('image.png')
+output = input.gaussian_blur
 
 # mask = time 'Generating mask' do
 #   Mask.new(input) do |x, y|
@@ -33,7 +26,7 @@ end
 # end
 #
 # output = time 'Dimming' do
-#   input.map do |x, y, pixel|
+#   input.map_pixels do |x, y, pixel|
 #     intensity = Color.grayscale_intensity(pixel)
 #     intensity *= 0.8
 #     Color.grayscale(intensity.round)

@@ -4,8 +4,8 @@ require 'core_ext/matrix'
 class Image
   module Threshold
     def threshold(value)
-      output = dup
-      each_pixel { |x, y, pixel| output.threshold_pixel(x, y, value) }
+      output = blank_copy
+      each_pixel { |x, y, pixel| output.set_pixel(x, y, threshold_pixel(pixel, value)) }
       output
     end
 
@@ -33,37 +33,28 @@ class Image
       threshold(current_threshold_value)
     end
 
-    def mean_adaptive_threshold(radius, adjustment)
-      adaptive_threshold(radius) { |block| block.mean - adjustment }
-    end
+    def adaptive_threshold(radius, adjustment, method = :mean)
+      output = blank_copy
 
-    def median_adaptive_threshold(radius, adjustment)
-      adaptive_threshold(radius) { |block| block.median - adjustment }
-    end
+      each_block(radius) do |x, y, block|
+        block = block.map { |pixel| Color.grayscale_intensity(pixel) }
+        value = block.send(method) - adjustment
+        pixel = get_pixel(x, y)
 
-    protected
-
-    def threshold_pixel(x, y, value)
-      if Color.grayscale_intensity(get_pixel(x, y)) > value
-        set_pixel(x, y, Color.grayscale(255))
-      else
-        set_pixel(x, y, Color.grayscale(0))
+        output.set_pixel(x, y, threshold_pixel(pixel, value))
       end
+
+      output
     end
 
     private
 
-    def adaptive_threshold(radius)
-      output = dup
-
-      each_block(radius) do |x, y, block|
-        block = block.map { |pixel| Color.to_grayscale_bytes(pixel).first }
-        value = yield block
-
-        output.threshold_pixel(x, y, value)
+    def threshold_pixel(pixel, value)
+      if Color.grayscale_intensity(pixel) > value
+        Color.grayscale(255)
+      else
+        Color.grayscale(0)
       end
-
-      output
     end
   end
 end

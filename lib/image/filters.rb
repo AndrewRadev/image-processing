@@ -4,22 +4,40 @@ require 'chunky_png'
 class Image
   module Filters
     def mean_blur(size)
-      convolve(mean_filter(size))
+      value  = 1.0 / (size * size)
+      matrix = Matrix.build(size) { value }
+
+      convolve(matrix)
     end
 
     def gaussian_blur
-      convolve(gaussian_filter)
+      matrix = 1/273.0 * Matrix[
+        [1, 4,  7,  4,  1],
+        [4, 16, 26, 16, 4],
+        [7, 26, 41, 26, 7],
+        [4, 16, 26, 16, 4],
+        [1, 4,  7,  4,  1]
+      ]
+
+      convolve(matrix)
     end
 
     def laplacian
-      convolve(laplacian_filter)
+      matrix = Matrix[
+        [-1, -1, -1],
+        [-1, 8,  -1],
+        [-1, -1, -1]
+      ]
+
+      convolve(matrix)
     end
 
     def sobel
       sobel_x = Matrix[ [-1,0,1], [-2,0,2], [-1,0,1] ]
       sobel_y = Matrix[ [-1,-2,-1], [0,0,0], [1,2,1] ]
 
-      output = dup
+      output = blank_copy
+
       each_block(1) do |x, y, block|
         pixel_x = 0
         pixel_y = 0
@@ -42,25 +60,8 @@ class Image
 
     private
 
-    def each_block(radius)
-      block_size = radius * 2 + 1
-
-      (radius .. (@png.width - radius) - 1).each do |x|
-        (radius .. (@png.height - radius) - 1).each do |y|
-          left = x - radius
-          top  = y - radius
-
-          block = Matrix.build(block_size) do |dx, dy|
-            @png.get_pixel(left + dx, top + dy)
-          end
-
-          yield [x, y, block]
-        end
-      end
-    end
-
     def convolve(matrix)
-      output = dup
+      output = blank_copy
 
       each_block(matrix.row_size / 2) do |x, y, block|
         r, g, b = 0, 0, 0
@@ -75,29 +76,6 @@ class Image
       end
 
       output
-    end
-
-    def mean_filter(n)
-      value = 1.0 / (n ** 2)
-      Matrix.build(n) { value }
-    end
-
-    def gaussian_filter
-      1/273.0 * Matrix[
-        [1, 4, 7, 4, 1],
-        [4, 16, 26, 16, 4],
-        [7, 26, 41, 26, 7],
-        [4, 16, 26, 16, 4],
-        [1, 4, 7, 4, 1]
-      ]
-    end
-
-    def laplacian_filter
-      Matrix[
-        [-1, -1, -1],
-        [-1, 8, -1],
-        [-1, -1, -1]
-      ]
     end
   end
 end
