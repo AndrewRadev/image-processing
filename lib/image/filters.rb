@@ -36,7 +36,7 @@ class Image
       sobel_x = Matrix[ [-1,0,1], [-2,0,2], [-1,0,1] ]
       sobel_y = Matrix[ [-1,-2,-1], [0,0,0], [1,2,1] ]
 
-      output = blank_copy
+      output = dup
 
       each_block(1) do |x, y, block|
         pixel_x = 0
@@ -61,7 +61,7 @@ class Image
     private
 
     def convolve(matrix)
-      output = blank_copy
+      output = dup
 
       each_block(matrix.row_size / 2) do |x, y, block|
         r, g, b = 0, 0, 0

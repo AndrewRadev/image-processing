@@ -34,7 +34,7 @@ class Image
     end
 
     def adaptive_threshold(radius, adjustment, method = :mean)
-      output = blank_copy
+      output = dup
 
       each_block(radius) do |x, y, block|
         block = block.map { |pixel| Color.grayscale_intensity(pixel) }

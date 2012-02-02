@@ -5,12 +5,14 @@ require 'matrix'
 require 'image/filters'
 require 'image/histogram'
 require 'image/threshold'
+require 'image/contrast'
 require 'color'
 
 class Image
   include Filters
   include Histogram
   include Threshold
+  include Contrast
 
   extend Forwardable
   delegate [:get_pixel, :set_pixel, :width, :height, :save] => :@png
@@ -65,8 +67,5 @@ class Image
         yield [x, y, block]
       end
     end
-  end
-
-  def -(other)
   end
 end
