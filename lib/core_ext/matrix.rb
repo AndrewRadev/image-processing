@@ -1,6 +1,8 @@
 require 'matrix'
 
 class Matrix
+  public :[]=
+
   def count
     row_size * column_size
   end

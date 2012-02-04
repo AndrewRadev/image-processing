@@ -47,6 +47,30 @@ class Image
       output
     end
 
+    def floyd_steinberg_threshold(value)
+      output = dup
+
+      (0 ... height).each do |y|
+        (0 ... width).each do |x|
+          original_intensity = Color.grayscale_intensity(get_pixel(x, y))
+          if original_intensity < value
+            new_intensity = 0
+          else
+            new_intensity = 255
+          end
+
+          error = original_intensity - value
+
+          output.modify_intensity(x + 1, y)     { |v| (v + 7/16.0 * error).round }
+          output.modify_intensity(x - 1, y + 1) { |v| (v + 3/16.0 * error).round }
+          output.modify_intensity(x,     y + 1) { |v| (v + 5/16.0 * error).round }
+          output.modify_intensity(x + 1, y + 1) { |v| (v + 1/16.0 * error).round }
+        end
+      end
+
+      output
+    end
+
     private
 
     def threshold_pixel(pixel, value)

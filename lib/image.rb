@@ -15,7 +15,7 @@ class Image
   include Contrast
 
   extend Forwardable
-  delegate [:get_pixel, :set_pixel, :width, :height, :save] => :@png
+  delegate [:get_pixel, :set_pixel, :[], :[]=, :width, :height, :save] => :@png
 
   def self.from_file(filename)
     new(ChunkyPNG::Image.from_file(filename))
@@ -38,6 +38,13 @@ class Image
       (0 ... @png.height).each do |y|
         yield [x, y, get_pixel(x, y)]
       end
+    end
+  end
+
+  def modify_intensity(x, y)
+    if @png.include_xy?(x, y)
+      new_value = yield Color.grayscale_intensity(get_pixel(x, y))
+      self.set_pixel(x, y, Color.grayscale(new_value))
     end
   end
 
