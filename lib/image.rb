@@ -6,6 +6,7 @@ require 'image/filters'
 require 'image/histogram'
 require 'image/threshold'
 require 'image/contrast'
+require 'image/logarithm'
 require 'color'
 
 class Image
@@ -13,6 +14,7 @@ class Image
   include Histogram
   include Threshold
   include Contrast
+  include Logarithm
 
   extend Forwardable
   delegate [:get_pixel, :set_pixel, :[], :[]=, :width, :height, :save] => :@png
